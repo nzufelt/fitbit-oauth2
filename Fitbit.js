@@ -76,10 +76,9 @@ var async = require( 'async' );
   }
 */
 
-var Fitbit = function( config, persist ) {
+var Fitbit = function( config ) {
     this.config = config;
     this.token  = null;
-    this.persist = persist;
     if ( ! this.config.timeout ) this.config.timeout = 60 * 1000; // default 1 minute
 }
 
@@ -112,11 +111,7 @@ Fitbit.prototype.fetchToken = function( code, cb ) {
 	    var token = JSON.parse( body );
 	    token.expires_at = moment().add( token.expires_in, 'seconds' ).format( 'YYYYMMDDTHH:mm:ss' );
 	    self.token = token;
-	    if ( ! self.persist ) return cb( null, token );
-	    self.persist( self.token, function( err ) {
-		if ( err ) return cb( err );
-		cb( null, token );
-	    });
+      return cb( null, token );
 	} catch( err ) {
 	    cb( err );
 	}
@@ -148,11 +143,7 @@ Fitbit.prototype.refresh = function( cb ) {
             var token = JSON.parse( body );
             token.expires_at = moment().add( token.expires_in, 'seconds' ).format( 'YYYYMMDDTHH:mm:ss' );
 	    self.token = token;
-	    if ( ! self.persist ) return cb( null, token );
-	    self.persist( self.token, function( err ) {
-		if ( err ) return cb( err );
-		cb( null, token );
-	    });
+      return cb( null, token );
 	} catch( err ) {
 	    cb( err );
 	}
